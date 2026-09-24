@@ -1,0 +1,7 @@
+product,age,spouse_age,guarantee_years,escalation,income_per_100k,note
+single life level,55,,0,level,7014,"Hargreaves Lansdown best-buy table, rates at 17 September 2026, £100,000, monthly in advance, average postcode"
+single life level,65,,0,level,8125,as above
+single life level,75,,0,level,10114,as above
+single life RPI,65,,5,rpi,5566,as above
+joint life 50%,60,57,0,level,7037,"as above; spouse three years younger, half income to survivor"
+joint life 50%,65,62,0,level,7574,as above
