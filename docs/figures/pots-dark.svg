@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 560" width="1120" height="560" role="img" aria-label="What each Retirement Living Standard costs to buy at 66">
+<rect width="1120" height="560" fill="#161614"/>
+<text x="64.0" y="44.0" font-family="'IBM Plex Sans', ui-sans-serif, system-ui, -apple-system, sans-serif" font-size="21" font-weight="600" fill="#f3f2ee" text-anchor="start">What each Retirement Living Standard costs to buy at 66</text>
+<text x="64.0" y="70.0" font-family="'IBM Plex Sans', ui-sans-serif, system-ui, -apple-system, sans-serif" font-size="14" font-weight="400" fill="#c3c2b7" text-anchor="start">Pot needed today, after the full state pension and income tax, June 2026 standards, inflation-linked annuity (level in lighter bars)</text>
+<line x1="64.0" y1="430.0" x2="1080.0" y2="430.0" stroke="#3d3d3a" stroke-width="1.0"/>
+<text x="54.0" y="434.0" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" font-weight="400" fill="#9a988f" text-anchor="end">£0</text>
+<line x1="64.0" y1="329.3" x2="1080.0" y2="329.3" stroke="#2a2a27" stroke-width="1.0"/>
+<text x="54.0" y="333.3" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" font-weight="400" fill="#9a988f" text-anchor="end">£300k</text>
+<line x1="64.0" y1="228.7" x2="1080.0" y2="228.7" stroke="#2a2a27" stroke-width="1.0"/>
+<text x="54.0" y="232.7" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" font-weight="400" fill="#9a988f" text-anchor="end">£600k</text>
+<line x1="64.0" y1="128.0" x2="1080.0" y2="128.0" stroke="#2a2a27" stroke-width="1.0"/>
+<text x="54.0" y="132.0" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" font-weight="400" fill="#9a988f" text-anchor="end">£900k</text>
+<path d="M118.7,430.0 V424.2 Q118.7,420.2 122.7,420.2 H140.7 Q144.7,420.2 144.7,424.2 V430.0 Z" fill="#3987e5"/>
+<path d="M152.7,430.0 V427.2 Q152.7,423.2 156.7,423.2 H174.7 Q178.7,423.2 178.7,427.2 V430.0 Z" fill="#4b4a46"/>
+<text x="131.7" y="410.2" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13" font-weight="600" fill="#f3f2ee" text-anchor="middle">£29k</text>
+<text x="148.7" y="452.0" font-family="'IBM Plex Sans', ui-sans-serif, system-ui, -apple-system, sans-serif" font-size="13" font-weight="400" fill="#f3f2ee" text-anchor="middle">minimum</text>
+<text x="148.7" y="470.0" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" font-weight="400" fill="#9a988f" text-anchor="middle">£13,900</text>
+<path d="M288.0,430.0 V287.7 Q288.0,283.7 292.0,283.7 H310.0 Q314.0,283.7 314.0,287.7 V430.0 Z" fill="#3987e5"/>
+<path d="M322.0,430.0 V331.7 Q322.0,327.7 326.0,327.7 H344.0 Q348.0,327.7 348.0,331.7 V430.0 Z" fill="#4b4a46"/>
+<text x="301.0" y="273.7" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13" font-weight="600" fill="#f3f2ee" text-anchor="middle">£436k</text>
+<text x="318.0" y="452.0" font-family="'IBM Plex Sans', ui-sans-serif, system-ui, -apple-system, sans-serif" font-size="13" font-weight="400" fill="#f3f2ee" text-anchor="middle">moderate</text>
+<text x="318.0" y="470.0" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" font-weight="400" fill="#9a988f" text-anchor="middle">£32,700</text>
+<path d="M457.3,430.0 V189.0 Q457.3,185.0 461.3,185.0 H479.3 Q483.3,185.0 483.3,189.0 V430.0 Z" fill="#3987e5"/>
+<path d="M491.3,430.0 V262.7 Q491.3,258.7 495.3,258.7 H513.3 Q517.3,258.7 517.3,262.7 V430.0 Z" fill="#4b4a46"/>
+<text x="470.3" y="175.0" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13" font-weight="600" fill="#f3f2ee" text-anchor="middle">£730k</text>
+<text x="487.3" y="452.0" font-family="'IBM Plex Sans', ui-sans-serif, system-ui, -apple-system, sans-serif" font-size="13" font-weight="400" fill="#f3f2ee" text-anchor="middle">comfortable</text>
+<text x="487.3" y="470.0" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" font-weight="400" fill="#9a988f" text-anchor="middle">£45,400</text>
+<text x="656.7" y="418.0" font-family="'IBM Plex Sans', ui-sans-serif, system-ui, -apple-system, sans-serif" font-size="13" font-weight="400" fill="#c3c2b7" text-anchor="middle">no pot</text>
+<text x="656.7" y="452.0" font-family="'IBM Plex Sans', ui-sans-serif, system-ui, -apple-system, sans-serif" font-size="13" font-weight="400" fill="#f3f2ee" text-anchor="middle">minimum</text>
+<text x="656.7" y="470.0" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" font-weight="400" fill="#9a988f" text-anchor="middle">£22,500</text>
+<path d="M796.0,430.0 V286.6 Q796.0,282.6 800.0,282.6 H818.0 Q822.0,282.6 822.0,286.6 V430.0 Z" fill="#3987e5"/>
+<path d="M830.0,430.0 V331.0 Q830.0,327.0 834.0,327.0 H852.0 Q856.0,327.0 856.0,331.0 V430.0 Z" fill="#4b4a46"/>
+<text x="809.0" y="272.6" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13" font-weight="600" fill="#f3f2ee" text-anchor="middle">£439k</text>
+<text x="826.0" y="452.0" font-family="'IBM Plex Sans', ui-sans-serif, system-ui, -apple-system, sans-serif" font-size="13" font-weight="400" fill="#f3f2ee" text-anchor="middle">moderate</text>
+<text x="826.0" y="470.0" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" font-weight="400" fill="#9a988f" text-anchor="middle">£45,400</text>
+<path d="M965.3,430.0 V161.0 Q965.3,157.0 969.3,157.0 H987.3 Q991.3,157.0 991.3,161.0 V430.0 Z" fill="#3987e5"/>
+<path d="M999.3,430.0 V243.1 Q999.3,239.1 1003.3,239.1 H1021.3 Q1025.3,239.1 1025.3,243.1 V430.0 Z" fill="#4b4a46"/>
+<text x="978.3" y="147.0" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13" font-weight="600" fill="#f3f2ee" text-anchor="middle">£814k</text>
+<text x="995.3" y="452.0" font-family="'IBM Plex Sans', ui-sans-serif, system-ui, -apple-system, sans-serif" font-size="13" font-weight="400" fill="#f3f2ee" text-anchor="middle">comfortable</text>
+<text x="995.3" y="470.0" font-family="'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" font-weight="400" fill="#9a988f" text-anchor="middle">£62,700</text>
+<text x="318.0" y="496.0" font-family="'IBM Plex Sans', ui-sans-serif, system-ui, -apple-system, sans-serif" font-size="13" font-weight="600" fill="#c3c2b7" text-anchor="middle">one person</text>
+<text x="826.0" y="496.0" font-family="'IBM Plex Sans', ui-sans-serif, system-ui, -apple-system, sans-serif" font-size="13" font-weight="600" fill="#c3c2b7" text-anchor="middle">two people</text>
+<text x="64.0" y="536.0" font-family="'IBM Plex Sans', ui-sans-serif, system-ui, -apple-system, sans-serif" font-size="12" font-weight="400" fill="#9a988f" text-anchor="start">Two full state pensions, £25,096 a year, already cover the two-person minimum. Housing costs are not in the standards.</text>
+</svg>
