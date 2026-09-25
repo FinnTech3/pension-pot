@@ -26,12 +26,13 @@ MONTHS = 12
 
 def annuity_factor(curve: Curve, alive: list[float], spread: float,
                    guarantee_years: int = 0, second_life: list[float] | None = None,
-                   survivor_share: float = 0.0) -> float:
+                   survivor_share: float = 0.0, escalation: float = 0.0) -> float:
     """Cost today of £1 a year, paid monthly in advance, for life.
 
     With a guarantee, payments in the first `guarantee_years` are made whether
     or not the buyer is alive. With a second life, `survivor_share` of the
-    income continues to the survivor after the first death.
+    income continues to the survivor after the first death. With `escalation`,
+    the income rises by that fraction on each anniversary.
     """
     total = 0.0
     horizon = len(alive) if second_life is None else max(len(alive), len(second_life))
@@ -46,16 +47,17 @@ def annuity_factor(curve: Curve, alive: list[float], spread: float,
             paid = p1 + survivor_share * p2 * (1 - p1)
         if paid <= 0:
             continue
-        total += paid * curve.discount(t, spread) / MONTHS
+        total += paid * (1 + escalation) ** (m // MONTHS) * curve.discount(t, spread) / MONTHS
     return total
 
 
 def income(pot: float, curve: Curve, age: int, year: int, spread: float, guarantee_years: int = 0,
-           spouse_age: int | None = None, survivor_share: float = 0.5, mortality_scale: float = 1.0) -> float:
+           spouse_age: int | None = None, survivor_share: float = 0.5, mortality_scale: float = 1.0,
+           escalation: float = 0.0) -> float:
     alive = unisex(age, year, mortality_scale)
     spouse = unisex(spouse_age, year, mortality_scale) if spouse_age is not None else None
     factor = annuity_factor(curve, alive, spread, guarantee_years, spouse,
-                            survivor_share if spouse is not None else 0.0)
+                            survivor_share if spouse is not None else 0.0, escalation)
     return pot / factor
 
 

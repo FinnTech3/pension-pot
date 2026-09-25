@@ -1,7 +1,31 @@
-product,age,spouse_age,guarantee_years,escalation,income_per_100k,note
-single life level,55,,0,level,7014,"Hargreaves Lansdown best-buy table, rates at 17 September 2026, £100,000, monthly in advance, average postcode"
-single life level,65,,0,level,8125,as above
-single life level,75,,0,level,10114,as above
-single life RPI,65,,5,rpi,5566,as above
-joint life 50%,60,57,0,level,7037,"as above; spouse three years younger, half income to survivor"
-joint life 50%,65,62,0,level,7574,as above
+product,age,spouse_age,guarantee_years,escalation,income_per_100k
+single life level,55,,0,level,7014
+single life level,60,,0,level,7370
+single life level,65,,0,level,8125
+single life level,70,,0,level,8908
+single life level,75,,0,level,10114
+"single life level, 5 year guarantee",55,,5,level,6993
+"single life level, 5 year guarantee",60,,5,level,7350
+"single life level, 5 year guarantee",65,,5,level,8061
+"single life level, 5 year guarantee",70,,5,level,8793
+"single life level, 5 year guarantee",75,,5,level,9855
+"single life RPI, 5 year guarantee",55,,5,rpi,4428
+"single life RPI, 5 year guarantee",60,,5,rpi,4858
+"single life RPI, 5 year guarantee",65,,5,rpi,5566
+"single life RPI, 5 year guarantee",70,,5,rpi,6338
+"single life RPI, 5 year guarantee",75,,5,rpi,7554
+"single life 3% escalation, 5 year guarantee",55,,5,3%,4917
+"single life 3% escalation, 5 year guarantee",60,,5,3%,5298
+"single life 3% escalation, 5 year guarantee",65,,5,3%,6016
+"single life 3% escalation, 5 year guarantee",70,,5,3%,6843
+"single life 3% escalation, 5 year guarantee",75,,5,3%,8051
+joint life 50% level,55,52,0,level,6651
+joint life 50% level,60,57,0,level,7037
+joint life 50% level,65,62,0,level,7574
+joint life 50% level,70,67,0,level,8228
+joint life 50% level,75,72,0,level,9004
+joint life 50% 3% escalation,55,52,0,3%,4505
+joint life 50% 3% escalation,60,57,0,3%,4931
+joint life 50% 3% escalation,65,62,0,3%,5543
+joint life 50% 3% escalation,70,67,0,3%,6230
+joint life 50% 3% escalation,75,72,0,3%,7158

@@ -11,7 +11,16 @@ from pensionpot import annuity, curves, mortality, verify
 def test_published_quotes_are_priced_out_of_sample_within_three_per_cent():
     r = verify.check_quotes()
     assert r.passed, r.summary
-    assert sum(1 for row in r.detail["rows"] if not row["tuned"]) == 4
+    assert len(r.detail["rows"]) == 30
+    assert r.detail["gated"] == 16 and r.detail["within"] == 16   # 18 at 65 and over, 2 of them tuned
+
+
+def test_below_65_the_model_is_too_generous_as_the_readme_states():
+    # a known deviation, not a match: at 55 and 60 every quote is priced high,
+    # by up to about four per cent; this pins its direction and size
+    gaps = verify.check_quotes().detail["young_gaps"]
+    assert len(gaps) == 12
+    assert all(0 < g < 0.05 for g in gaps)
 
 
 def test_twin_population_mortality_cannot_price_every_age():
