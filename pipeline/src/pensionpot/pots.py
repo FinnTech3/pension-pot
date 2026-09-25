@@ -1,20 +1,27 @@
-"""What pot each PLSA Retirement Living Standard needs, and what it used to need.
+"""What pot each Retirement Living Standard needs, and what it used to need.
 
-The PLSA's standards are net incomes, after tax and excluding housing: what a
-one-person household outside London needs a year for a minimum, moderate or
-comfortable retirement. This turns each into a pot:
+The Retirement Living Standards (Pensions UK, formerly the PLSA, with
+Loughborough University; updated 3 June 2026) are yearly spending, after tax
+and excluding housing, for a minimum, moderate or comfortable retirement, for
+one person or two. This turns each into a pot:
 
-  1. the state pension pays £12,548 a year (the full new state pension,
+  1. the state pension pays £12,548 a year each (the full new state pension,
      2026-27);
   2. income tax falls on the state pension and the annuity together, at
-     2026-27 rates in England, Wales and Northern Ireland;
+     2026-27 rates in England, Wales and Northern Ireland, each person with
+     their own allowance;
   3. the gross annuity income needed is whatever brings net income up to the
      standard, found by bisection because tax makes it non-linear;
   4. the pot is that income divided by the annuity rate, priced as in
      annuity.py with the spread and mortality set against real quotes.
 
+A couple is two people of the same age, each with a full state pension and
+their own RPI-linked annuity buying half the couple's standard. When one dies
+the other keeps their own annuity and state pension, which is less than the
+one-person standard at the same level; the tool says so.
+
 The central case buys an RPI-linked annuity, because the standards are real
-incomes and a level annuity loses a third of its value in twenty years of 2%
+spending and a level annuity loses a third of its value in twenty years of 2%
 inflation. The level-annuity pot is reported beside it, smaller and less safe.
 
 For the history, everything except the gilt curve is held at today's values:
@@ -38,7 +45,12 @@ PERSONAL_ALLOWANCE = 12_570.0     # frozen to April 2031
 BASIC_RATE_LIMIT = 50_270.0
 ADDITIONAL_RATE_THRESHOLD = 125_140.0
 
-STANDARDS_ONE_PERSON = {"minimum": 13_400.0, "moderate": 31_700.0, "comfortable": 43_900.0}
+# Retirement Living Standards, June 2026: yearly spending after tax, excluding housing
+STANDARDS = {
+    1: {"minimum": 13_900.0, "moderate": 32_700.0, "comfortable": 45_400.0},
+    2: {"minimum": 22_500.0, "moderate": 45_400.0, "comfortable": 62_700.0},
+}
+STANDARDS_ONE_PERSON = STANDARDS[1]
 RETIREMENT_AGE = 66
 
 HISTORY_FILES = [
@@ -89,12 +101,17 @@ class Pot:
         return self.gross_annuity / self.rate_level
 
 
+def gross_for(net_target: float, people: int = 1) -> float:
+    """Annuity income before tax a household needs: each person buys their share."""
+    return people * gross_needed(net_target / people)
+
+
 def pots_today(nominal: Curve, real: Curve, mortality_scale: float, spread: float,
-               age: int = RETIREMENT_AGE) -> list[Pot]:
+               age: int = RETIREMENT_AGE, people: int = 1) -> list[Pot]:
     year = nominal.date.year
     rpi = annuity.income(1.0, real, age, year, spread, mortality_scale=mortality_scale)
     level = annuity.income(1.0, nominal, age, year, spread, mortality_scale=mortality_scale)
-    return [Pot(name, net, gross_needed(net), rpi, level) for name, net in STANDARDS_ONE_PERSON.items()]
+    return [Pot(name, net, gross_for(net, people), rpi, level) for name, net in STANDARDS[people].items()]
 
 
 def history(gross_annuity: float, mortality_scale: float, spread: float, since: int = 2005,

@@ -16,16 +16,22 @@ def test_income_tax_at_2026_27_rates():
 
 
 def test_gross_up_nets_exactly_the_target():
-    for target in (13_400, 31_700, 43_900):
+    for target in (13_900, 32_700, 45_400):
         g = pots.gross_needed(target)
         total = g + pots.STATE_PENSION
         assert total - pots.income_tax(total) == pytest.approx(target, abs=0.01)
 
 
 def test_the_minimum_needs_only_a_small_annuity_taxed_above_the_allowance():
-    # £12,548 state pension plus g, taxed at 20% above £12,570, nets £13,400:
-    # 0.8 (12,548 + g) + 0.2 x 12,570 = 13,400, so g = 1,059.50
-    assert pots.gross_needed(13_400) == pytest.approx(1_059.50, abs=0.01)
+    # £12,548 state pension plus g, taxed at 20% above £12,570, nets £13,900:
+    # 0.8 (12,548 + g) + 0.2 x 12,570 = 13,900, so g = 1,684.50
+    assert pots.gross_needed(13_900) == pytest.approx(1_684.50, abs=0.01)
+
+
+def test_a_couple_buys_two_halves_each_with_their_own_allowance():
+    # £62,700 for two is £31,350 each: 0.8 (12,548 + g) + 0.2 x 12,570 = 31,350
+    each = (31_350 - 0.2 * 12_570) / 0.8 - 12_548
+    assert pots.gross_for(62_700, people=2) == pytest.approx(2 * each, abs=0.02)
 
 
 @functools.lru_cache(maxsize=None)
