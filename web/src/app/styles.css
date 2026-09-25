@@ -385,7 +385,7 @@ h1 {
 
 .big .unit {
   color: var(--ink-2);
-  max-width: 24ch;
+  max-width: 36ch;
   font-size: 15px;
 }
 

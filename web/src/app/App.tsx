@@ -359,7 +359,7 @@ function Sections({ d, c }: { d: PensionFile; c: Choice }) {
           <div className="field slider" style={{ marginTop: 12 }}>
             <label htmlFor="shift">
               Gilt yields moved by:{" "}
-              <output htmlFor="shift">{`${shift > 0 ? "+" : ""}${shift.toFixed(2)} points: ${gbp(Math.round(atShift / 1000) * 1000)}`}</output>
+              <output htmlFor="shift">{`${shift > 0 ? "+" : ""}${shift.toFixed(2)} points`}</output>
             </label>
             <input
               id="shift"
@@ -370,6 +370,9 @@ function Sections({ d, c }: { d: PensionFile; c: Choice }) {
               value={shift}
               onChange={(e) => setShift(Number(e.target.value))}
             />
+            <p className="note" aria-live="polite">
+              {`The same retirement would cost ${gbp(Math.round(atShift / 1000) * 1000)}.`}
+            </p>
           </div>
         </section>
       )}
