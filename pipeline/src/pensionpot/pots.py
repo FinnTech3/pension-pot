@@ -27,14 +27,15 @@ inflation. The level-annuity pot is reported beside it, smaller and less safe.
 For the history, everything except the gilt curve is held at today's values:
 the same retiree, the same standard, today's tax and state pension, today's
 insurer margins. Only the price of turning a pot into an income moves, which
-is the point. Holding margins at today's level flatters the past: at 2026
-margins the model prices late-2021 level annuities more generously than
-insurers were quoting, so the 2021 pots here are if anything too small.
+is the point. Insurers' margins in earlier years were surely not the same as
+today's, and I could not find a citable record of what they quoted in 2021 to
+check against, so the history is what gilt yields alone did to the price.
 """
 
 from __future__ import annotations
 
 import datetime as dt
+import functools
 from dataclasses import dataclass
 
 from . import annuity
@@ -114,6 +115,15 @@ def pots_today(nominal: Curve, real: Curve, mortality_scale: float, spread: floa
     return [Pot(name, net, gross_for(net, people), rpi, level) for name, net in STANDARDS[people].items()]
 
 
+@functools.lru_cache(maxsize=None)
+def history_curves() -> dict[dt.date, Curve]:
+    """The Bank's real spot curve at every month end it publishes."""
+    curves: dict[dt.date, Curve] = {}
+    for f in HISTORY_FILES:
+        curves.update(load_curves(f))
+    return curves
+
+
 def history(gross_annuity: float, mortality_scale: float, spread: float, since: int = 2005,
             age: int = RETIREMENT_AGE) -> list[tuple[dt.date, float, float]]:
     """(month end, RPI-linked annuity rate, pot needed) for every month since `since`.
@@ -121,9 +131,7 @@ def history(gross_annuity: float, mortality_scale: float, spread: float, since: 
     Months where the Bank's real curve does not span 5 to 20 years are skipped
     rather than extrapolated.
     """
-    curves: dict[dt.date, Curve] = {}
-    for f in HISTORY_FILES:
-        curves.update(load_curves(f))
+    curves = history_curves()
     out = []
     for day in sorted(curves):
         c = curves[day]
