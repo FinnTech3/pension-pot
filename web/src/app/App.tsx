@@ -205,8 +205,7 @@ export function App() {
         {d && (
           <aside className="signoff">
             <p>
-              I built this because "you need a million pounds to retire" gets repeated as a fixed truth when it is
-              really just an income divided by an annuity rate that moves. If that changed your number, there's more
+              That pot is real, priced from the actual gilt curve on the day, not a round number someone picked. More
               like it at <a href={PORTFOLIO}>finn-lakin-portfolio.netlify.app</a>.
             </p>
           </aside>

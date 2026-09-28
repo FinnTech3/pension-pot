@@ -9,8 +9,8 @@ against 30 annuity quotes insurers were actually offering.
 
 **Why I built this.** Everyone repeats some version of "you need a million
 pounds to retire" as though it were a law of physics rather than a number
-that came from somewhere. I wanted to know where, and whether it still held.
-It doesn't, and not because anything about retirement changed.
+that came from somewhere specific. It came from an annuity rate, which
+moves a great deal more than anyone quoting the number lets on.
 
 ## The finding
 
