@@ -7,6 +7,11 @@ against 30 annuity quotes insurers were actually offering.
 
 **Work out yours:** [finntech3.github.io/pension-pot](https://finntech3.github.io/pension-pot/)
 
+**Why I built this.** Everyone repeats some version of "you need a million
+pounds to retire" as though it were a law of physics rather than a number
+that came from somewhere. I wanted to know where, and whether it still held.
+It doesn't, and not because anything about retirement changed.
+
 ## The finding
 
 **The price of a comfortable retirement has almost halved since 2021.** In
@@ -28,9 +33,11 @@ buy, and 2022 undid them in months.
 
 **What I think this means.** "You need a million pounds to retire" is not a
 fixed truth about retirement. It is an income divided by an annuity rate, and
-the annuity rate is the half of that sum nobody quotes. Anyone who worked out
-their number in 2021 and has not redone it is aiming at a target nearly twice
-too high, and anyone who did the sum in 2005 happens to be about right again.
+the annuity rate is the half of that sum nobody quotes, mostly because it
+makes for a worse headline than a big round number does. Anyone who worked
+out their number in 2021 and has not redone it is aiming at a target nearly
+twice too high, and anyone who did the sum in 2005 happens to be about right
+again, purely by accident of when interest rates decided to move.
 
 ## What each standard costs today
 

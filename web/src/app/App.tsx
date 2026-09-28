@@ -18,6 +18,7 @@ import { YieldChart } from "./YieldChart";
 import { useCountUp } from "./hooks";
 
 const REPO = "https://github.com/FinnTech3/pension-pot";
+const PORTFOLIO = "https://finn-lakin-portfolio.netlify.app/";
 
 interface Choice {
   n: number;
@@ -200,6 +201,16 @@ export function App() {
         </div>
 
         {d && <Sections d={d} c={c} />}
+
+        {d && (
+          <aside className="signoff">
+            <p>
+              I built this because "you need a million pounds to retire" gets repeated as a fixed truth when it is
+              really just an income divided by an annuity rate that moves. If that changed your number, there's more
+              like it at <a href={PORTFOLIO}>finn-lakin-portfolio.netlify.app</a>.
+            </p>
+          </aside>
+        )}
       </main>
 
       <footer>
