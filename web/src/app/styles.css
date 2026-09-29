@@ -208,6 +208,12 @@ select {
   gap: 18px;
 }
 
+/* a grid item must never be wider than its track, whatever is inside it */
+.stage > *,
+.side > * {
+  min-width: 0;
+}
+
 .head {
   padding-top: 8px;
 }
@@ -215,7 +221,7 @@ select {
 h1 {
   font-family: var(--serif);
   font-weight: 600;
-  font-size: clamp(33px, 9vw, 76px);
+  font-size: clamp(26px, 9vw, 76px);
   line-height: 1;
   letter-spacing: -0.02em;
   margin: 0;
@@ -743,16 +749,23 @@ h2 {
   max-width: 100%;
 }
 
+/* hugs its buttons when they fit, wraps instead of pushing the page sideways
+   when they do not */
 .segmented {
-  display: inline-flex;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
   border: 1px solid var(--edge);
   border-radius: 999px;
   padding: 3px;
   background: var(--panel);
   width: fit-content;
+  max-width: 100%;
 }
 
 .segmented button {
+  flex: 1 1 auto;
+  white-space: nowrap;
   border: 0;
   background: none;
   border-radius: 999px;
