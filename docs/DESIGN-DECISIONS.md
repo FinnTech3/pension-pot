@@ -78,8 +78,25 @@ answer is, which is the useful thing to know: for a comfortable retirement
 at 66, yields one point higher cut the pot by 10% and one point lower raise
 it by 12%.
 
+## Why draw the history as a ridge, and start it at zero?
+
+The price of the same retirement has run from £704k to £1.40m and back. A
+line on its own would say the price moved; a filled ridge says the price is a
+quantity of money you have to have, and the area under it reads as that
+quantity. That only works if the base is zero, so the base is zero, and about
+half the picture is flat. That is the honest half: the retirement never got
+cheap, it got twice as dear and came back.
+
+## Why does the dial move a line rather than redraw the ridge?
+
+Shifting gilt yields changes what the retirement costs today. It cannot change
+what it cost in 2011, because that price was set by the curve on the day. So
+the dial moves today's price up and down against a fixed history, and the page
+says which month that price was last seen in. Redrawing the whole ridge would
+imply a counterfactual past the data cannot support.
+
 ## Why no charting library?
 
-The charts are a line and a curve. Drawn as SVG directly they resize to the
-screen so their text stays readable on a phone, and the page stays under
-60 KB of JavaScript.
+The charts are a line, a curve and the ridge. Drawn as SVG directly they
+resize to the screen so their text stays readable on a phone, and the page
+stays under 62 KB of JavaScript.

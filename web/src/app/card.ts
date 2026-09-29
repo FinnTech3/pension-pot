@@ -1,4 +1,6 @@
-// The result as a 1080 by 1350 picture, drawn in the browser; nothing is uploaded.
+// The result as a 1080 by 1350 picture, the shape that fills a phone screen in
+// a feed: the price, and the ridge it sits on. Drawn in the browser; nothing
+// is uploaded anywhere.
 
 export interface CardContent {
   lead: string;
@@ -8,12 +10,15 @@ export interface CardContent {
   history: number[];
 }
 
-const INK = "#14171a";
-const TEXT = "#eef1f0";
-const SOFT = "#bcc3c2";
-const MUTED = "#939b9a";
-const REST = "#434a49";
-const YOU = "#3987e5";
+// The page's dark theme, fixed, so the picture looks the same whoever saves it.
+const PAPER = "#140f22";
+const TEXT = "#f0ecf8";
+const SOFT = "#c8c0dc";
+const MUTED = "#9d94b8";
+const RIDGE_1 = "#5a3d8a";
+const RIDGE_2 = "#f2c6d6";
+const ROSE = "#f2a8cc";
+const ACCENT = "#cbb6f0";
 
 const FONTS = [
   '700 260px "IBM Plex Sans Condensed"',
@@ -52,24 +57,33 @@ export function drawCard(canvas: HTMLCanvasElement, c: CardContent): void {
   if (!ctx) return;
   const P = 84;
   const inner = 1080 - 2 * P;
-  ctx.fillStyle = INK;
+  ctx.fillStyle = PAPER;
   ctx.fillRect(0, 0, 1080, 1350);
+  ctx.textBaseline = "alphabetic";
+  ctx.textAlign = "left";
 
-  // the mark: a pot filling up
-  [10, 16, 22, 28, 34].forEach((h, i) => {
-    ctx.fillStyle = i === 4 ? TEXT : REST;
-    ctx.fillRect(P + i * 14, P + 40 - h, 10, h);
-  });
+  // the seal and the series line
+  ctx.strokeStyle = TEXT;
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.arc(P + 34, P + 34, 34, 0, 2 * Math.PI);
+  ctx.stroke();
   ctx.fillStyle = TEXT;
-  ctx.font = '700 44px "IBM Plex Sans Condensed", sans-serif';
-  ctx.fillText("Pension pot", P + 84, P + 40);
+  ctx.textAlign = "center";
+  ctx.font = 'italic 600 28px "IBM Plex Serif", serif';
+  ctx.fillText("FL", P + 34, P + 44);
+  ctx.textAlign = "left";
+  ctx.fillStyle = MUTED;
+  ctx.font = '400 24px "IBM Plex Mono", monospace';
+  ctx.fillText("FINN LAKIN · NO. 3 OF 6", P + 90, P + 30);
+  ctx.fillText("PENSIONS", P + 90, P + 62);
 
   ctx.fillStyle = SOFT;
-  ctx.font = '400 40px "IBM Plex Sans", sans-serif';
-  let y = P + 150;
+  ctx.font = '400 36px "IBM Plex Sans", sans-serif';
+  let y = P + 180;
   for (const line of wrap(ctx, c.lead, inner)) {
     ctx.fillText(line, P, y);
-    y += 52;
+    y += 46;
   }
 
   let size = 260;
@@ -80,12 +94,15 @@ export function drawCard(canvas: HTMLCanvasElement, c: CardContent): void {
     size -= 10;
   } while (size > 120);
   y += size * 0.85;
+  ctx.fillStyle = ACCENT;
   ctx.fillText(c.big, P - 6, y);
-  ctx.font = '600 44px "IBM Plex Sans", sans-serif';
-  y += 70;
+  ctx.fillStyle = TEXT;
+  ctx.font = '600 46px "IBM Plex Serif", serif';
+  y += 66;
   ctx.fillText(c.unit, P, y);
-  y += 80;
-  ctx.font = '400 38px "IBM Plex Sans", sans-serif';
+  y += 72;
+  ctx.fillStyle = SOFT;
+  ctx.font = '400 34px "IBM Plex Sans", sans-serif';
   for (const text of c.lines) {
     for (const line of wrap(ctx, text, inner)) {
       ctx.fillText(line, P, y);
@@ -94,24 +111,46 @@ export function drawCard(canvas: HTMLCanvasElement, c: CardContent): void {
     y += 14;
   }
 
-  // the price since 2005, as a line
-  const base = 1350 - P - 90;
-  const height = 170;
+  // the ridge: the same retirement's price at each month end since 2005
+  const base = 1350 - P - 92;
+  const height = 240;
   const hi = Math.max(...c.history);
-  ctx.strokeStyle = YOU;
-  ctx.lineWidth = 5;
+  const px = (i: number) => P + (i / (c.history.length - 1)) * inner;
+  const py = (v: number) => base - (v / hi) * height;
+  const fill = ctx.createLinearGradient(0, base - height, 0, base);
+  fill.addColorStop(0, RIDGE_2);
+  fill.addColorStop(1, RIDGE_1);
+  ctx.globalAlpha = 0.5;
+  ctx.fillStyle = fill;
+  ctx.beginPath();
+  ctx.moveTo(px(0), py(c.history[0]!));
+  c.history.forEach((v, i) => ctx.lineTo(px(i), py(v)));
+  ctx.lineTo(px(c.history.length - 1), base);
+  ctx.lineTo(px(0), base);
+  ctx.closePath();
+  ctx.fill();
+  ctx.globalAlpha = 1;
+  ctx.strokeStyle = RIDGE_2;
+  ctx.lineWidth = 4;
   ctx.lineJoin = "round";
   ctx.beginPath();
-  c.history.forEach((v, i) => {
-    const px = P + (i / (c.history.length - 1)) * inner;
-    const py = base - (v / hi) * height;
-    if (i) ctx.lineTo(px, py);
-    else ctx.moveTo(px, py);
-  });
+  c.history.forEach((v, i) => (i ? ctx.lineTo(px(i), py(v)) : ctx.moveTo(px(i), py(v))));
   ctx.stroke();
+
+  // where today sits on it
+  const now = c.history[c.history.length - 1]!;
+  ctx.strokeStyle = ROSE;
+  ctx.lineWidth = 3;
+  ctx.setLineDash([6, 8]);
+  ctx.beginPath();
+  ctx.moveTo(P, py(now));
+  ctx.lineTo(1080 - P, py(now));
+  ctx.stroke();
+  ctx.setLineDash([]);
+
   ctx.fillStyle = MUTED;
-  ctx.font = '400 28px "IBM Plex Sans", sans-serif';
-  ctx.fillText("the same retirement's price, each month since 2005", P, base + 44);
-  ctx.font = '400 32px "IBM Plex Mono", monospace';
-  ctx.fillText("finntech3.github.io/pension-pot", P, 1350 - P);
+  ctx.font = '400 26px "IBM Plex Sans", sans-serif';
+  ctx.fillText("the same retirement's price, each month since 2005", P, base + 40);
+  ctx.font = '400 26px "IBM Plex Mono", monospace';
+  ctx.fillText("finntech3.github.io/pension-pot", P, 1350 - P + 10);
 }

@@ -122,6 +122,11 @@ curve instead of the real one misses them by as much as 62%.
   state pension, leaves the standard's spending after 2026-27 income tax. A
   couple is two people each with a state pension, an allowance and half the
   standard. The pot is that income divided by the annuity rate.
+- **The ridge.** The same pot priced at every month end from January 2005 to
+  August 2026: 260 months, drawn as a filled mountain. Everything but the gilt
+  curve is held at today's values, so the shape is what yields alone did to the
+  price. A dial moves today's price up and down the same scale, and where it
+  crosses the ridge is the last month the price was there.
 
 More on each choice in [docs/DESIGN-DECISIONS.md](docs/DESIGN-DECISIONS.md).
 Every source, address and checksum is in [docs/SOURCES.md](docs/SOURCES.md).

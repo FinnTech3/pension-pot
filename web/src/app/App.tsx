@@ -12,13 +12,15 @@ import {
   reached,
   spendingFrom,
 } from "../lib/pension";
-import { HistoryChart } from "./HistoryChart";
+import { Ridge } from "./Ridge";
 import { ShareCard } from "./ShareCard";
-import { YieldChart } from "./YieldChart";
+import { Monogram } from "./series/Monogram";
+import { Note } from "./series/Note";
+import { SeriesStrip } from "./series/SeriesStrip";
+import { PORTFOLIO } from "./series/series";
 import { useCountUp } from "./hooks";
 
 const REPO = "https://github.com/FinnTech3/pension-pot";
-const PORTFOLIO = "https://finn-lakin-portfolio.netlify.app/";
 
 interface Choice {
   n: number;
@@ -109,6 +111,7 @@ export function App() {
   const [d, setD] = useState<PensionFile | null>(null);
   const [failed, setFailed] = useState(false);
   const [c, setC] = useState<Choice>(() => readChoice(location.search));
+  const [shift, setShift] = useState(0);
   const theme = useTheme();
 
   useEffect(() => {
@@ -126,16 +129,13 @@ export function App() {
 
   return (
     <div className="wrap">
-      <header>
-        <div className="mark">
-          <span className="ladder" aria-hidden="true">
-            {[8, 10, 12, 14, 16].map((h, i) => (
-              <i key={i} className={i === 4 ? "d" : undefined} style={{ height: h }} />
-            ))}
-          </span>
-          <b>Pension pot</b>
-          <small>what a retirement costs to buy</small>
-        </div>
+      <header className="bar">
+        <Monogram />
+        <p className="series">
+          A series of six by <b>Finn Lakin</b>
+          <br />
+          No. 3 · Pensions
+        </p>
         <button
           className="toggle"
           type="button"
@@ -147,57 +147,79 @@ export function App() {
       </header>
 
       <main>
-        <div className="hero">
-          <h1>How big a pension pot does your retirement need?</h1>
-          <p className="lede">
-            The pot that buys each Retirement Living Standard for life, after the state pension and tax, priced from
-            today's gilt yields and checked against real annuity quotes.
-          </p>
-          <div className="controls">
-            <Segmented
-              label="Who is retiring"
-              options={[
-                [1, "Just me"],
-                [2, "Two of us"],
-              ]}
-              value={c.n}
-              onChange={(n) => set({ n })}
-            />
-            <Segmented
-              label="The retirement"
-              options={[
-                ["minimum", "Minimum"],
-                ["moderate", "Moderate"],
-                ["comfortable", "Comfortable"],
-              ]}
-              value={c.standard}
-              onChange={(standard) => set({ standard })}
-            />
-            <div className="field slider">
-              <label htmlFor="age">
-                Age you buy the income: <output htmlFor="age">{c.age}</output>
-              </label>
-              <input
-                id="age"
-                type="range"
-                min={65}
-                max={75}
-                step={1}
-                value={c.age}
-                onChange={(e) => set({ age: Number(e.target.value) })}
+        <div className="stage">
+          <div className="head">
+            <h1>
+              The price of <em>a life.</em>
+            </h1>
+            <p className="dek">
+              A retirement is something you buy, and its price moves. This is what the same retirement has cost to buy
+              at each month end since 2005, and what it costs today.
+            </p>
+          </div>
+
+          <Note>
+            I went looking for the number I would need and found round figures with nothing behind them. So I priced it
+            myself, from the gilt curve on the day, and checked it against what insurers were actually quoting.
+          </Note>
+
+          <figure className="ridge-fig">
+            {d ? (
+              <Ridge d={d} n={c.n} standard={c.standard} age={c.age} kind={c.kind} shift={shift} onShift={setShift} />
+            ) : (
+              <p className="waiting">
+                {failed ? "The data did not load. Refresh the page to try again." : "Pricing every month since 2005"}
+              </p>
+            )}
+          </figure>
+
+          <div className="side">
+            <div className="controls">
+              <Segmented
+                label="Who is retiring"
+                options={[
+                  [1, "Just me"],
+                  [2, "Two of us"],
+                ]}
+                value={c.n}
+                onChange={(n) => set({ n })}
               />
+              <Segmented
+                label="The retirement"
+                options={[
+                  ["minimum", "Minimum"],
+                  ["moderate", "Moderate"],
+                  ["comfortable", "Comfortable"],
+                ]}
+                value={c.standard}
+                onChange={(standard) => set({ standard })}
+              />
+              <div className="field slider">
+                <label htmlFor="age">
+                  Age you buy the income: <output htmlFor="age">{c.age}</output>
+                </label>
+                <input
+                  id="age"
+                  type="range"
+                  min={65}
+                  max={75}
+                  step={1}
+                  value={c.age}
+                  onChange={(e) => set({ age: Number(e.target.value) })}
+                />
+              </div>
+            </div>
+
+            <div className={d ? "answer" : "answer skeleton"} aria-live="polite">
+              {failed ? (
+                <p>The data did not load. Refresh the page to try again.</p>
+              ) : d ? (
+                <Answer d={d} c={c} setKind={(kind) => set({ kind })} />
+              ) : (
+                <p>Loading today's prices</p>
+              )}
             </div>
           </div>
-        </div>
-
-        <div className={d ? "answer" : "answer skeleton"} aria-live="polite">
-          {failed ? (
-            <p>The data did not load. Refresh the page to try again.</p>
-          ) : d ? (
-            <Answer d={d} c={c} setKind={(kind) => set({ kind })} />
-          ) : (
-            <p>Loading today's prices</p>
-          )}
         </div>
 
         {d && <Sections d={d} c={c} />}
@@ -205,11 +227,12 @@ export function App() {
         {d && (
           <aside className="signoff">
             <p>
-              That pot is real, priced from the actual gilt curve on the day, not a round number someone picked. More
-              like it at <a href={PORTFOLIO}>finn-lakin-portfolio.netlify.app</a>.
+              That pot is real, priced from the gilt curve on the day, not a round number someone picked out of the air.
             </p>
           </aside>
         )}
+
+        <SeriesStrip here="pension-pot" />
       </main>
 
       <footer>
@@ -224,8 +247,9 @@ export function App() {
           different trade-off this does not model.
         </p>
         <p>
-          Built by Finn Lakin. The method, the code and every check are at{" "}
-          <a href={REPO}>github.com/FinnTech3/pension-pot</a>. No cookies, no tracking.
+          Made by Finn Lakin. The method, the code and every check are at{" "}
+          <a href={REPO}>github.com/FinnTech3/pension-pot</a>, and the rest of my work is at{" "}
+          <a href={PORTFOLIO}>finn-lakin-portfolio.netlify.app</a>. No cookies, no tracking.
         </p>
       </footer>
     </div>
@@ -315,11 +339,8 @@ function Answer({ d, c, setKind }: { d: PensionFile; c: Choice; setKind: (k: Kin
 }
 
 function Sections({ d, c }: { d: PensionFile; c: Choice }) {
-  const [shift, setShift] = useState(0);
   const past = useMemo(() => priceHistory(d, c.n, c.standard), [d, c.n, c.standard]);
-  const pots = useMemo(() => d.shifts.map((s) => potFor(d, c.n, c.standard, c.age, c.kind, s)), [d, c]);
   const now = potFor(d, c.n, c.standard, c.age, c.kind);
-  const atShift = potFor(d, c.n, c.standard, c.age, c.kind, shift);
   const gated = d.check.rows.filter((r) => !r.tuned && r.age >= 65);
   const worst = Math.max(...gated.map((r) => Math.abs(r.gap)));
   const young = d.check.rows.filter((r) => r.age < 65);
@@ -344,49 +365,6 @@ function Sections({ d, c }: { d: PensionFile; c: Choice }) {
 
   return (
     <>
-      {now >= 1 && (
-        <section>
-          <h2>The same retirement, every month since 2005</h2>
-          <p className="sub">
-            {`The pot a ${c.standard} retirement for ${who} at 66 needed at each month end, with an income that rises with prices. Everything but gilt yields is held at today's values, so this is what yields alone did to the price.`}
-          </p>
-          <div className="fig">
-            <HistoryChart points={past} label={`A ${c.standard} retirement for ${who}`} />
-          </div>
-        </section>
-      )}
-
-      {now >= 1 && (
-        <section>
-          <h2>If gilt yields moved</h2>
-          <p className="sub">
-            Annuity prices follow gilt yields. Move them and see what the same retirement would cost. Higher yields mean
-            a smaller pot.
-          </p>
-          <div className="fig">
-            <YieldChart shifts={d.shifts} pots={pots} shift={shift} />
-          </div>
-          <div className="field slider" style={{ marginTop: 12 }}>
-            <label htmlFor="shift">
-              Gilt yields moved by:{" "}
-              <output htmlFor="shift">{`${shift > 0 ? "+" : ""}${shift.toFixed(2)} points`}</output>
-            </label>
-            <input
-              id="shift"
-              type="range"
-              min={d.shifts[0]}
-              max={d.shifts[d.shifts.length - 1]}
-              step={0.25}
-              value={shift}
-              onChange={(e) => setShift(Number(e.target.value))}
-            />
-            <p className="note" aria-live="polite">
-              {`The same retirement would cost ${gbp(Math.round(atShift / 1000) * 1000)}.`}
-            </p>
-          </div>
-        </section>
-      )}
-
       <section>
         <h2>How I know these prices are right</h2>
         <p className="sub">
