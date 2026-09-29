@@ -87,18 +87,24 @@ const THUMBS: Record<string, ReactNode> = {
   "brexit-baseline": (
     <>
       <rect width="125" height="100" fill="#0b0d24" />
-      <g fill="none" strokeLinecap="round">
-        <path d="M14 70 C50 64, 80 40, 118 22" stroke="#e9e7ff" strokeWidth="1.4" />
-        <path d="M14 70 C50 66, 84 52, 118 40" stroke="#9c93f0" strokeWidth="1.1" />
-        <path d="M14 70 C50 70, 86 64, 118 60" stroke="#e8739e" strokeWidth="1.1" />
-        <path d="M14 70 C50 74, 86 80, 118 84" stroke="#4d4a7a" strokeWidth="0.9" />
-        <path d="M14 70 C50 60, 76 30, 118 12" stroke="#4d4a7a" strokeWidth="0.9" />
-      </g>
-      <g fill="#fff">
-        <circle cx="30" cy="20" r="0.8" />
-        <circle cx="52" cy="14" r="0.6" />
-        <circle cx="96" cy="72" r="0.7" />
-        <circle cx="104" cy="10" r="0.9" />
+      <g fill="none" strokeLinecap="round" strokeLinejoin="round">
+        {/* the years every baseline is fitted to, where they still agree */}
+        <path
+          d="M6 62 L18 58 L26 66 L34 61 L42 63 L50 59 L58 62M6 66 L18 63 L26 70 L34 65 L42 67 L50 64 L58 66M6 58 L18 54 L26 62 L34 57 L42 59 L50 55 L58 58"
+          stroke="#5a5f99"
+          strokeWidth="0.8"
+        />
+        {/* and where they stop agreeing */}
+        <path d="M58 58 L72 44 L84 48 L98 30 L112 22 L119 14" stroke="#ff9ec2" strokeWidth="1.6" />
+        <path d="M58 60 L72 52 L84 55 L98 44 L112 39 L119 34" stroke="#c9c2ff" strokeWidth="1.6" />
+        <path d="M58 62 L72 58 L84 60 L98 55 L112 52 L119 49" stroke="#7ec8f2" strokeWidth="1.6" />
+        <g strokeWidth="0.9">
+          <path d="M58 59 L72 48 L84 51 L98 37 L112 31 L119 25" stroke="#a56584" />
+          <path d="M58 63 L72 62 L84 64 L98 63 L112 62 L119 61" stroke="#6f6aa8" />
+          <path d="M58 64 L72 66 L84 69 L98 72 L112 76 L119 80" stroke="#4f7f9e" />
+          <path d="M58 65 L72 70 L84 74 L98 80 L112 85 L119 90" stroke="#6f6aa8" />
+        </g>
+        <path d="M6 62 H119" stroke="#e9e7ff" strokeWidth="1" />
       </g>
     </>
   ),
@@ -106,12 +112,10 @@ const THUMBS: Record<string, ReactNode> = {
 
 interface Props {
   here: string;
-  /** This site's own picture, drawn from its data. */
-  ownThumb?: ReactNode;
 }
 
 /** The other five, so a reader who liked this one has somewhere to go next. */
-export function SeriesStrip({ here, ownThumb }: Props) {
+export function SeriesStrip({ here }: Props) {
   return (
     <nav className="strip" aria-labelledby="strip-title">
       <h2 id="strip-title">A series of six by Finn Lakin</h2>
@@ -126,7 +130,7 @@ export function SeriesStrip({ here, ownThumb }: Props) {
             <li key={w.slug}>
               <a className={isHere ? "work here" : "work"} href={w.url} aria-current={isHere ? "page" : undefined}>
                 <svg viewBox="0 0 125 100" aria-hidden="true">
-                  {isHere && ownThumb ? ownThumb : THUMBS[w.slug]}
+                  {THUMBS[w.slug]}
                 </svg>
                 <span>
                   <small>{isHere ? `No. ${w.no} · You are here` : `No. ${w.no} · ${w.topic}`}</small>
