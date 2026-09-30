@@ -391,7 +391,7 @@ function Sections({ d, c }: { d: PensionFile; c: Choice }) {
             <div>
               <b>{`${gated.length} more quotes at 65 to 75, priced blind`}</b>
               <span>
-                {`Six kinds of annuity, level, inflation-linked, escalating and joint life: every one within 3% of what the best insurer offered on ${day(d.quote_date)}, the worst ${(100 * worst).toFixed(1)}%.`}
+                {`Six kinds of annuity, spanning level, inflation-linked, escalating and joint life: every one within 3% of what the best insurer offered on ${day(d.quote_date)}, the worst ${(100 * worst).toFixed(1)}%.`}
               </span>
             </div>
           </li>
