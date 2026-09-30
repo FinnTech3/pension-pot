@@ -6,6 +6,7 @@ import {
   STANDARDS,
   type Standard,
   history as priceHistory,
+  looksLikePensionFile,
   people,
   potFor,
   readPot,
@@ -117,8 +118,11 @@ export function App() {
 
   useEffect(() => {
     fetch(`${import.meta.env.BASE_URL}data/pension.json`)
-      .then((r) => r.json() as Promise<PensionFile>)
-      .then(setD)
+      .then((r) => r.json())
+      .then((file) => {
+        if (!looksLikePensionFile(file)) throw new Error("unexpected data shape");
+        setD(file);
+      })
       .catch(() => setFailed(true));
   }, []);
 

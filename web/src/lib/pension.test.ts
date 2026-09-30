@@ -4,6 +4,7 @@ import {
   MAX_POT,
   type PensionFile,
   covered,
+  looksLikePensionFile,
   history,
   incomeTax,
   place,
@@ -207,5 +208,13 @@ describe("what a reader types in the pot box", () => {
       expect(Number.isFinite(spendingFrom(d, 1, pot, 66, "rpi"))).toBe(true);
       expect(Number.isFinite(spendingFrom(d, 2, pot, 66, "rpi"))).toBe(true);
     }
+  });
+});
+
+describe("the load guard", () => {
+  it("accepts the real file and rejects anything that is not it", () => {
+    expect(looksLikePensionFile(d)).toBe(true);
+    for (const bad of [null, undefined, {}, [], [1, 2, 3], { rates: {} }, { history: [] }, "text", 5])
+      expect(looksLikePensionFile(bad)).toBe(false);
   });
 });

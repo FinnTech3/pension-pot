@@ -151,3 +151,19 @@ export function readPot(text: string): number | null {
   if (!(n > 0)) return null;
   return Math.min(n, MAX_POT);
 }
+
+/**
+ * True when a parsed JSON body looks like the pension file, rather than an
+ * error page or a stale deploy's wrong file. It checks only the top-level
+ * fields the page reads at render, enough to route a bad shape to the "did not
+ * load" message instead of a blank screen; the pipeline guarantees the rest.
+ */
+export function looksLikePensionFile(x: unknown): x is PensionFile {
+  if (typeof x !== "object" || x === null) return false;
+  const f = x as Partial<PensionFile>;
+  return (
+    typeof f.rates === "object" && f.rates !== null &&
+    typeof f.standards === "object" && f.standards !== null &&
+    Array.isArray(f.history) && Array.isArray(f.ages)
+  );
+}
