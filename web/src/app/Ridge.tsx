@@ -1,5 +1,17 @@
 import { useMemo, useState } from "react";
-import { type Kind, type PensionFile, type Standard, history, place, points, potFor } from "../lib/pension";
+import {
+  type Kind,
+  type PensionFile,
+  type Standard,
+  covered,
+  history,
+  people,
+  place,
+  points,
+  potFor,
+  spendingFrom,
+} from "../lib/pension";
+import { gbp } from "../lib/format";
 import { useWidth } from "./hooks";
 
 interface Props {
@@ -48,6 +60,20 @@ export function Ridge({ d, n, standard, age, kind, shift, onShift }: Props) {
   const peak = months[peakAt]!;
   const last = months[months.length - 1]!;
 
+  // Two state pensions already cover a two-person minimum retirement, so its
+  // price is nothing and has been nothing every month since 2005. A ridge of
+  // zeroes is not a ridge, and dividing by it is how the page came to offer
+  // "Infinity% more than now", so this state is drawn and worded on its own.
+  const none = covered(d, n, standard);
+  const fromState = spendingFrom(d, n, 0, age, kind);
+  const need = d.standards[people(n)][standard].net;
+  // What the same household's other two standards have cost, so the floor is
+  // read against them: that is what being covered by the state pension means.
+  const ghosts = useMemo(
+    () => (["moderate", "comfortable"] as Standard[]).map((s) => ({ s, months: history(d, n, s) })),
+    [d, n],
+  );
+
   const where = useMemo(() => place(months, now), [months, now]);
   const moved = `Move gilt yields ${shift > 0 ? "up" : "down"} ${points(Math.abs(shift))} and the price is ${short(now)}`;
   const shown = at === null ? null : months[at]!;
@@ -59,6 +85,59 @@ export function Ridge({ d, n, standard, age, kind, shift, onShift }: Props) {
         : where.at === "cheapest"
           ? `${moved}, cheaper than any month since 2005.`
           : `${moved}. It was last that ${where.dearer ? "dear" : "cheap"} in ${month(months[where.i]!.date)}.`;
+
+  if (none) {
+    const ceiling = Math.max(...ghosts.flatMap((g) => g.months.map((m) => m.pot))) * 1.08;
+    const gy = (v: number) => B - (v / ceiling) * (B - T);
+    return (
+      <div ref={ref} className="ridge-wrap">
+        <svg viewBox={`0 0 ${W} ${H}`} width={W} height={H} className="ridge none" role="img" aria-labelledby="ridge-desc">
+          <desc id="ridge-desc">
+            {`A ${standard} retirement for ${n === 2 ? "two people" : "one person"} costs nothing to buy: ` +
+              `${gbp(fromState)} of state pension a year after tax against the ${gbp(need)} the standard asks for. ` +
+              `Its line runs along nothing at every month end since 2005, under the two standards that do cost something: ` +
+              ghosts
+                .map((g) => `${g.s} peaked at ${short(Math.max(...g.months.map((m) => m.pot)))}`)
+                .join(" and ") +
+              "."}
+          </desc>
+          <text className="c-note" x={L} y={16}>
+            what each retirement has cost to buy, month by month
+          </text>
+          {ghosts.map((g) => {
+            const path = g.months.map((m, i) => `${x(i).toFixed(1)},${gy(m.pot).toFixed(1)}`).join("L");
+            // named at the left, where both lines are flat and far apart; at
+            // the right they end close together and the label crosses them
+            const start = gy(g.months[0]!.pot);
+            return (
+              <g key={g.s} className="ghost">
+                <path d={`M${path}`} fill="none" />
+                <text className="c-tick c-halo" x={L + 2} y={start - 9}>
+                  {g.s}
+                </text>
+              </g>
+            );
+          })}
+          <line className="floor" x1={L} x2={W - R} y1={B} y2={B} />
+          <text className="nothing" x={L} y={B - 14}>
+            nothing, every month since 2005
+          </text>
+          <text className="c-tick" x={L} y={B + 20}>
+            2005
+          </text>
+          <text className="c-tick" x={W - R} y={B + 20} textAnchor="end">
+            {last.date.slice(0, 4)}
+          </text>
+        </svg>
+
+        <div className="dial">
+          <p className="readout">
+            {`Two state pensions come to ${gbp(fromState)} a year after tax, and a ${standard} retirement for two asks for ${gbp(need)}. There is no pot to buy, so there is nothing for gilt yields to move. The two lines above it are what the same couple's moderate and comfortable retirements have cost.`}
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div ref={ref} className="ridge-wrap">

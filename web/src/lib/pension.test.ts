@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { type PensionFile, history, incomeTax, place, points, potFor, rate, reached, spendingFrom } from "./pension";
+import { type PensionFile, covered, history, incomeTax, place, points, potFor, rate, reached, spendingFrom } from "./pension";
 
 const d = JSON.parse(readFileSync("public/data/pension.json", "utf8")) as PensionFile;
 
@@ -116,5 +116,55 @@ describe("the dial's reading of the ridge", () => {
     expect(points(1)).toBe("1 point");
     expect(points(0.25)).toBe("0.25 points");
     expect(points(-3)).toBe("-3 points");
+  });
+});
+
+describe("the retirement the state pension already buys", () => {
+  // Two state pensions come to more than a two-person minimum retirement asks
+  // for, so its price is nothing, and has been at every month since 2005. The
+  // ridge used to draw that as a line along zero and read the peak against it,
+  // which is how the page offered "Infinity% more than now".
+  it("is the two-person minimum, and nothing else, at a pound rather than at zero", () => {
+    // the pipeline's solve leaves a residue where the state pension covers the
+    // standard outright, so the rule cannot be an equality with zero
+    expect(d.standards["2"].minimum.gross).toBeGreaterThan(0);
+    expect(d.standards["2"].minimum.gross).toBeLessThan(1);
+    const all: [number, "minimum" | "moderate" | "comfortable"][] = [];
+    for (const n of [1, 2]) for (const s of ["minimum", "moderate", "comfortable"] as const) all.push([n, s]);
+    expect(all.filter(([n, s]) => covered(d, n, s))).toEqual([[2, "minimum"]]);
+  });
+
+  it("costs nothing at every month and every setting, and everything else costs something", () => {
+    for (const n of [1, 2])
+      for (const s of ["minimum", "moderate", "comfortable"] as const) {
+        const zero = covered(d, n, s);
+        for (const m of history(d, n, s)) expect(m.pot === 0).toBe(zero);
+        for (const kind of ["rpi", "level"] as const)
+          for (const age of d.ages)
+            for (const shift of d.shifts) {
+              const pot = potFor(d, n, s, age, kind, shift);
+              expect(Number.isFinite(pot)).toBe(true);
+              expect(pot === 0).toBe(zero);
+            }
+      }
+  });
+
+  it("leaves the couple covered by the state pension alone, with room to spare", () => {
+    const fromState = spendingFrom(d, 2, 0, 66, "rpi");
+    expect(fromState).toBeGreaterThan(d.standards["2"].minimum.net);
+    expect(Math.round(fromState)).toBe(25_096);
+    // and one state pension does not cover one person's minimum
+    expect(spendingFrom(d, 1, 0, 66, "rpi")).toBeLessThan(d.standards["1"].minimum.net);
+  });
+
+  it("never asks how much dearer the peak was than nothing", () => {
+    // the readout prints (peak / now - 1); it is only reached where now > 0
+    for (const n of [1, 2])
+      for (const s of ["minimum", "moderate", "comfortable"] as const) {
+        if (covered(d, n, s)) continue;
+        const now = potFor(d, n, s, 66, "rpi");
+        const peak = history(d, n, s).reduce((a, b) => (b.pot > a.pot ? b : a));
+        expect(Number.isFinite(peak.pot / now - 1)).toBe(true);
+      }
   });
 });

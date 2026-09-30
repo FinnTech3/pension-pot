@@ -885,6 +885,34 @@ h2 {
   user-select: none;
 }
 
+/* the one standard with no price to draw: two state pensions cover it, so the
+   ridge is a floor and a sentence rather than a line along zero */
+.ridge.none {
+  cursor: default;
+}
+
+.ridge .floor {
+  stroke: var(--ridge-2);
+  stroke-width: 2;
+}
+
+.ridge .ghost path {
+  stroke: var(--ridge-2);
+  stroke-width: 1.5;
+  opacity: 0.32;
+}
+
+.ridge .ghost text {
+  opacity: 0.75;
+}
+
+.ridge .nothing {
+  fill: var(--ink);
+  font-family: "IBM Plex Serif", Georgia, serif;
+  font-style: italic;
+  font-size: 19px;
+}
+
 .ridge-a {
   stop-color: var(--ridge-2);
   stop-opacity: 0.75;

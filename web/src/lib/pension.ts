@@ -49,10 +49,22 @@ export function people(n: number): "1" | "2" {
   return n === 2 ? "2" : "1";
 }
 
+/**
+ * The pot an income needs at a price, and nothing where the income is nothing.
+ *
+ * The rule is a pound rather than zero because the pipeline solves for the
+ * income wanted on top of the state pension, and where the state pension
+ * covers a standard outright that solve lands on a residue near 1e-25 rather
+ * than on 0. Anything under a pound a year is no pot; it is written here once
+ * so the price today and the price in 2005 cannot disagree about it.
+ */
+function potOf(gross: number, price: number): number {
+  return gross < 1 ? 0 : gross / price;
+}
+
 /** The pot a household needs for a standard. Zero where the state pension already covers it. */
 export function potFor(d: PensionFile, n: number, standard: Standard, age: number, kind: Kind, shift = 0): number {
-  const gross = d.standards[people(n)][standard].gross;
-  return gross < 1 ? 0 : gross / rate(d, kind, age, shift);
+  return potOf(d.standards[people(n)][standard].gross, rate(d, kind, age, shift));
 }
 
 /** Spending money a year, after tax, from a pot split evenly between the household, plus state pensions. */
@@ -68,6 +80,16 @@ export function reached(d: PensionFile, n: number, spending: number): Standard |
   return best;
 }
 
+/**
+ * True where the state pension already covers the standard, so the pot needed
+ * is nothing: two state pensions come to more than a two-person minimum
+ * retirement asks for. The pipeline writes the gross income wanted on top of
+ * the state pension, and writes zero when there is none.
+ */
+export function covered(d: PensionFile, n: number, standard: Standard): boolean {
+  return d.standards[people(n)][standard].gross < 1;
+}
+
 export interface Month {
   date: string;
   pot: number;
@@ -76,7 +98,7 @@ export interface Month {
 /** The pot the standard would have needed at each month end, inflation-linked, at 66. */
 export function history(d: PensionFile, n: number, standard: Standard): Month[] {
   const gross = d.standards[people(n)][standard].gross;
-  return d.history.map(([date, r]) => ({ date, pot: gross / r }));
+  return d.history.map(([date, r]) => ({ date, pot: potOf(gross, r) }));
 }
 
 /**
