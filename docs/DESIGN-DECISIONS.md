@@ -60,8 +60,11 @@ past quotes to check how far apart the two are.
 ## How is a couple handled?
 
 As two people of the same age, each with a full state pension and their own
-personal allowance, each buying an inflation-linked annuity for half the
-couple's standard. It is simple and it is honest about one gap: when one dies,
+personal allowance, each buying an inflation-linked annuity that lifts them the
+rest of the way to half the couple's standard. The state pension counts towards
+the standard, not on top of it, so where two state pensions already clear the
+standard, as they do for the two-person minimum, there is no annuity to buy and
+no pot needed. It is simple and it is honest about one gap: when one dies,
 the survivor keeps their own annuity and state pension, which is less than the
 one-person standard. A joint-life annuity would protect the survivor and cost
 more.
