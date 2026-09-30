@@ -116,7 +116,9 @@ export function drawCard(canvas: HTMLCanvasElement, c: CardContent): void {
   const height = 240;
   const hi = Math.max(...c.history);
   const px = (i: number) => P + (i / (c.history.length - 1)) * inner;
-  const py = (v: number) => base - (v / hi) * height;
+  // a retirement the state pension already buys has no ridge to draw: every
+  // month is nothing, and a ridge scaled to nothing divides by it
+  const py = (v: number) => (hi > 0 ? base - (v / hi) * height : base);
   const fill = ctx.createLinearGradient(0, base - height, 0, base);
   fill.addColorStop(0, RIDGE_2);
   fill.addColorStop(1, RIDGE_1);
@@ -150,7 +152,11 @@ export function drawCard(canvas: HTMLCanvasElement, c: CardContent): void {
 
   ctx.fillStyle = MUTED;
   ctx.font = '400 26px "IBM Plex Sans", sans-serif';
-  ctx.fillText("the same retirement's price, each month since 2005", P, base + 40);
+  ctx.fillText(
+    hi > 0 ? "the same retirement's price, each month since 2005" : "nothing to buy, each month since 2005",
+    P,
+    base + 40,
+  );
   ctx.font = '400 26px "IBM Plex Mono", monospace';
   ctx.fillText("finntech3.github.io/pension-pot", P, 1350 - P + 10);
 }
