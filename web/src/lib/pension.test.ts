@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { type PensionFile, history, incomeTax, potFor, rate, reached, spendingFrom } from "./pension";
+import { type PensionFile, history, incomeTax, place, points, potFor, rate, reached, spendingFrom } from "./pension";
 
 const d = JSON.parse(readFileSync("public/data/pension.json", "utf8")) as PensionFile;
 
@@ -46,5 +46,75 @@ describe("pots", () => {
   it("passes the pricing check", () => {
     expect(d.check.passed).toBe(true);
     expect(d.check.rows).toHaveLength(30);
+  });
+});
+
+describe("the dial's reading of the ridge", () => {
+  const KINDS = ["rpi", "level"] as const;
+  const PAIRS: [number, "minimum" | "moderate" | "comfortable"][] = [
+    [1, "minimum"],
+    [1, "moderate"],
+    [1, "comfortable"],
+    [2, "moderate"],
+    [2, "comfortable"],
+  ];
+
+  it("only calls a price a record when it is one", () => {
+    let seen = 0;
+    for (const [n, standard] of PAIRS) {
+      const months = history(d, n, standard);
+      const pots = months.map((m) => m.pot);
+      const lo = Math.min(...pots);
+      const hi = Math.max(...pots);
+      for (const kind of KINDS)
+        for (const age of d.ages)
+          for (const shift of d.shifts) {
+            const price = potFor(d, n, standard, age, kind, shift);
+            const where = place(months, price);
+            if (where.at === "cheapest") expect(price).toBeLessThan(lo);
+            if (where.at === "dearest") expect(price).toBeGreaterThan(hi);
+            seen++;
+          }
+    }
+    expect(seen).toBe(5 * 2 * d.ages.length * d.shifts.length);
+  });
+
+  it("names a month the price was last that dear or that cheap, with none since", () => {
+    for (const [n, standard] of PAIRS) {
+      const months = history(d, n, standard);
+      for (const kind of KINDS)
+        for (const age of d.ages)
+          for (const shift of d.shifts) {
+            const price = potFor(d, n, standard, age, kind, shift);
+            const where = place(months, price);
+            if (where.at !== "since") continue;
+            // the named month is on the far side of the price
+            if (where.dearer) expect(months[where.i]!.pot).toBeGreaterThanOrEqual(price);
+            else expect(months[where.i]!.pot).toBeLessThanOrEqual(price);
+            // and every month after it is on this side, so it really is the last
+            for (const m of months.slice(where.i + 1)) {
+              if (where.dearer) expect(m.pot).toBeLessThan(price);
+              else expect(m.pot).toBeGreaterThan(price);
+            }
+          }
+    }
+  });
+
+  it("puts the first notch up from today above November 2008, not below it", () => {
+    // the price fell further in November 2008 than it has since, so a price
+    // under the latest month is not a price under every month
+    const months = history(d, 1, "moderate");
+    const low = months.reduce((a, b) => (b.pot < a.pot ? b : a));
+    expect(low.date.slice(0, 7)).toBe("2008-11");
+    const price = potFor(d, 1, "moderate", 66, "rpi", 0.25);
+    expect(price).toBeLessThan(months[months.length - 1]!.pot);
+    expect(price).toBeGreaterThan(low.pot);
+    expect(place(months, price)).toEqual({ at: "since", i: months.indexOf(low), dearer: false });
+  });
+
+  it("counts one point as a point", () => {
+    expect(points(1)).toBe("1 point");
+    expect(points(0.25)).toBe("0.25 points");
+    expect(points(-3)).toBe("-3 points");
   });
 });

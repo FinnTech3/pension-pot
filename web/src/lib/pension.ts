@@ -68,8 +68,42 @@ export function reached(d: PensionFile, n: number, spending: number): Standard |
   return best;
 }
 
+export interface Month {
+  date: string;
+  pot: number;
+}
+
 /** The pot the standard would have needed at each month end, inflation-linked, at 66. */
-export function history(d: PensionFile, n: number, standard: Standard): { date: string; pot: number }[] {
+export function history(d: PensionFile, n: number, standard: Standard): Month[] {
   const gross = d.standards[people(n)][standard].gross;
   return d.history.map(([date, r]) => ({ date, pot: gross / r }));
+}
+
+/**
+ * Where a price sits against every month since 2005, given a `history` and a
+ * `price` in the same money.
+ *
+ * `since` names the last month on the far side of `price` from where the
+ * series ends: every month after it was on this side, so it is the month the
+ * price was last that dear, or last that cheap. Being below the final month
+ * is not the same as being below all of them, which is the whole reason this
+ * is a function with a test: the price fell to a low in November 2008 that
+ * some dial settings sit above.
+ */
+export type Place = { at: "dearest" } | { at: "cheapest" } | { at: "since"; i: number; dearer: boolean };
+
+export function place(months: Month[], price: number): Place {
+  const pots = months.map((m) => m.pot);
+  if (price > Math.max(...pots)) return { at: "dearest" };
+  if (price < Math.min(...pots)) return { at: "cheapest" };
+  const dearer = price > pots[pots.length - 1]!;
+  for (let i = pots.length - 1; i >= 0; i--) {
+    if (dearer ? pots[i]! >= price : pots[i]! <= price) return { at: "since", i, dearer };
+  }
+  throw new Error("a price inside the range has a month on the other side of it");
+}
+
+/** "1 point", "2.5 points": the dial reads in points of gilt yield. */
+export function points(n: number): string {
+  return `${n} ${n === 1 ? "point" : "points"}`;
 }
