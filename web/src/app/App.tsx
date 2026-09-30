@@ -8,6 +8,7 @@ import {
   history as priceHistory,
   people,
   potFor,
+  readPot,
   rate,
   reached,
   spendingFrom,
@@ -265,8 +266,8 @@ function Answer({ d, c, setKind }: { d: PensionFile; c: Choice; setKind: (k: Kin
   const past = priceHistory(d, c.n, c.standard);
   const peak = past.reduce((a, b) => (b.pot > a.pot ? b : a));
   const [potText, setPotText] = useState("");
-  const yours = Number(potText.replace(/[^0-9.]/g, ""));
-  const spending = yours > 0 ? spendingFrom(d, c.n, yours, c.age, c.kind) : null;
+  const yours = readPot(potText);
+  const spending = yours === null ? null : spendingFrom(d, c.n, yours, c.age, c.kind);
   const level = spending !== null ? reached(d, c.n, spending) : null;
 
   return (
@@ -327,7 +328,7 @@ function Answer({ d, c, setKind }: { d: PensionFile; c: Choice; setKind: (k: Kin
               onChange={(e) => setPotText(e.target.value)}
             />
           </div>
-          {spending !== null && (
+          {spending !== null && yours !== null && (
             <p className="note">
               {`${gbp(yours)} buys ${gbp(yours * r)} a year. With ${c.n === 2 ? "two state pensions" : "the state pension"}, that is ${gbp(spending)} to spend after tax: ${level ? `enough for the ${level} standard` : "below the minimum standard"}.`}
             </p>

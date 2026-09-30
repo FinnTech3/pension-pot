@@ -129,3 +129,25 @@ export function place(months: Month[], price: number): Place {
 export function points(n: number): string {
   return `${n} ${n === 1 ? "point" : "points"}`;
 }
+
+/** Above any real pension pot, and below the point where the arithmetic stops meaning anything. */
+export const MAX_POT = 100_000_000;
+
+/**
+ * What a reader typed in the pot box, as money, or nothing where it is not a
+ * figure.
+ *
+ * It takes a pound sign, commas and spaces, and nothing else. Deleting every
+ * character that is not a digit instead read "-500" as five hundred, a script
+ * tag as one pound, and 1.79e+308 as £1.79, each of them a figure the reader
+ * never typed. Four hundred nines do parse to Infinity, which bought an income
+ * of £∞ a year, so a real figure past the ceiling is read at the ceiling and
+ * the page prints what it is working with.
+ */
+export function readPot(text: string): number | null {
+  const cleaned = text.replace(/[£,\s]/g, "");
+  if (!/^\d+(\.\d+)?$/.test(cleaned)) return null;
+  const n = Number(cleaned);
+  if (!(n > 0)) return null;
+  return Math.min(n, MAX_POT);
+}

@@ -1,6 +1,19 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { type PensionFile, covered, history, incomeTax, place, points, potFor, rate, reached, spendingFrom } from "./pension";
+import {
+  MAX_POT,
+  type PensionFile,
+  covered,
+  history,
+  incomeTax,
+  place,
+  points,
+  potFor,
+  rate,
+  readPot,
+  reached,
+  spendingFrom,
+} from "./pension";
 
 const d = JSON.parse(readFileSync("public/data/pension.json", "utf8")) as PensionFile;
 
@@ -166,5 +179,33 @@ describe("the retirement the state pension already buys", () => {
         const peak = history(d, n, s).reduce((a, b) => (b.pot > a.pot ? b : a));
         expect(Number.isFinite(peak.pot / now - 1)).toBe(true);
       }
+  });
+});
+
+describe("what a reader types in the pot box", () => {
+  it("reads money however it is written", () => {
+    expect(readPot("250000")).toBe(250_000);
+    expect(readPot("£250,000")).toBe(250_000);
+    expect(readPot("  250000  ")).toBe(250_000);
+    expect(readPot("1000.50")).toBe(1000.5);
+  });
+
+  it("gives nothing back for what is not a figure", () => {
+    for (const t of ["", " ", "abc", ".", "-", "0", "-500", "1.2.3", "<script>alert(1)</script>"])
+      expect(readPot(t)).toBeNull();
+  });
+
+  it("never returns a pot that buys an income of infinity", () => {
+    // four hundred nines parse to Infinity, and £Infinity bought £∞ a year
+    expect(Number("9".repeat(400))).toBe(Number.POSITIVE_INFINITY);
+    expect(readPot("9".repeat(400))).toBe(MAX_POT);
+    // and does not turn a number it cannot read into a small one
+    expect(readPot(String(Number.MAX_VALUE))).toBeNull();
+    expect(readPot("1e309")).toBeNull();
+    for (const t of ["9".repeat(400), String(MAX_POT * 10)]) {
+      const pot = readPot(t)!;
+      expect(Number.isFinite(spendingFrom(d, 1, pot, 66, "rpi"))).toBe(true);
+      expect(Number.isFinite(spendingFrom(d, 2, pot, 66, "rpi"))).toBe(true);
+    }
   });
 });
